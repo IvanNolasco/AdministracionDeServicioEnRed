@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+import ejemplo_hazel as oids
 
 # Create your views here.
 
@@ -11,6 +12,12 @@ def prueba(request):
 def routers(request):
     #valor()
     return render (request, "r1.html",{"title":"Monitoring"})
+
+def oids_req(request):
+    var_oid = oids.obtener_valores_oid()
+    return render (request, "r1.html",{"oid":var_oid})
+
+
 
 
 from pysnmp import hlapi, debug
