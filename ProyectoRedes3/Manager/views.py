@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 
 def prueba(request):
-    return render (request, "main.html",{"title":"Menu", "year":"2019"})
+    return render (request, "layout.html",{"title":"Welcome", "year":"2019"})
 
 '''class DeliversClient(View):
     template_name='deliversClient.html'

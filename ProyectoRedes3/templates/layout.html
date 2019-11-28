@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>{{ title }} - Manager SNMP</title>
+  {% load staticfiles %}
+  <!-- Custom fonts for this template-->
+  <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="static/css/sb-admin-2.min.css" rel="stylesheet">
+  {% block links %}{% endblock %}
+</head>
+
+<body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+      
+          <!-- Sidebar -->
+          <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+      
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+              <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="material-icons">alarm_on</i>
+              </div>
+              <div class="sidebar-brand-text mx-3">SNMP Manager</div>
+            </a>
+      
+            <!-- Heading -->
+            <div class="sidebar-heading">
+              Monitoring
+            </div>
+      
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="material-icons">settings_input_hdmi</i>
+                <span>Components</span>
+              </a>
+              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <h6 class="collapse-header">Routers:</h6>
+                  <a class="collapse-item" href="buttons.html">Router 1</a>
+                  <a class="collapse-item" href="cards.html">Router 2</a>
+                  <a class="collapse-item" href="cards.html">Router 3</a>
+                  <a class="collapse-item" href="cards.html">Router 4</a>
+                  <a class="collapse-item" href="cards.html">Router 5</a>
+                </div>
+              </div>
+            </li>
+      
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+              <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+      
+          </ul>
+          <!-- End of Sidebar -->
+
+          <div class="container body-content">
+                {% block content %}
+                {% block button %}{% endblock %}
+                {% endblock %}
+            <hr />
+            <footer>
+                <p>&copy; {{ year }} - SNMP Manager</p>
+            </footer>
+            </div>
+        </div>
+        <!-- Bootstrap core JavaScript-->
+        <script src="static/vendor/jquery/jquery.min.js"></script>
+        <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="static/js/sb-admin-2.min.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="static/vendor/chart.js/Chart.min.js"></script>
+
+        <!-- Page level custom scripts -->
+        <script src="static/js/demo/chart-area-demo.js"></script>
+        <script src="static/js/demo/chart-pie-demo.js"></script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>
