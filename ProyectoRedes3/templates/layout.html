@@ -28,7 +28,7 @@
           <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
       
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="main.html">
               <div class="sidebar-brand-icon rotate-n-15">
                     <i class="material-icons">alarm_on</i>
               </div>
@@ -49,11 +49,11 @@
               <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                   <h6 class="collapse-header">Routers:</h6>
-                  <a class="collapse-item" href="buttons.html">Router 1</a>
-                  <a class="collapse-item" href="cards.html">Router 2</a>
-                  <a class="collapse-item" href="cards.html">Router 3</a>
-                  <a class="collapse-item" href="cards.html">Router 4</a>
-                  <a class="collapse-item" href="cards.html">Router 5</a>
+                  <a class="collapse-item" href="r1.html">Router 1</a>
+                  <a class="collapse-item" href="r2.html">Router 2</a>
+                  <a class="collapse-item" href="r3.html">Router 3</a>
+                  <a class="collapse-item" href="r4.html">Router 4</a>
+                  <a class="collapse-item" href="r5.html">Router 5</a>
                 </div>
               </div>
             </li>
@@ -65,17 +65,21 @@
       
           </ul>
           <!-- End of Sidebar -->
-
-          <div class="container body-content">
+          <div class="container-fluid">
                 {% block content %}
-                {% block button %}{% endblock %}
+                <img class="center" src="https://www.hcltechsw.com/wps/wcm/connect/cb403198-038b-4654-a05c-67940c868af6/desktop/welcome%403x.png?MOD=AJPERES&amp;CACHEID=ROOTWORKSPACE-cb403198-038b-4654-a05c-67940c868af6-desktop-mNNvFMu" width="1100" height="900">
                 {% endblock %}
-            <hr />
-            <footer>
-                <p>&copy; {{ year }} - SNMP Manager</p>
-            </footer>
+            {%block footer%}
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+              <div class="copyright text-center my-auto">
+                <span>Copyright &copy; SNMP Manager 2019</span>
+              </div>
             </div>
-        </div>
+          </footer>
+          {%endblock%}
+          <!-- End of Footer -->
         <!-- Bootstrap core JavaScript-->
         <script src="static/vendor/jquery/jquery.min.js"></script>
         <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
