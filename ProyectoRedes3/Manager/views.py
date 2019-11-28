@@ -9,7 +9,7 @@ def prueba(request):
     return render (request, "layout.html",{"title":"Welcome"})
 
 def routers(request):
-    valor()
+    #valor()
     return render (request, "r1.html",{"title":"Monitoring"})
 
 
