@@ -76,13 +76,25 @@ def ejecutar_oid(
 
         respuesta = coincidencias_num[len(coincidencias_num) - 1]
     else:
-        respuesta = str(
-            get(
-                ip,
-                oids,
-                hlapi.CommunityData(comunidad)
-            )  # Nota: Si no funciona, agregar un [0] aqui
+        coincidencias_num = re.split(
+            ':\s*', 
+            str(
+                get(
+                    ip,
+                    oids,
+                    hlapi.CommunityData(comunidad)
+                )  # Nota: Si no funciona, agregar un [0] aqui
+            )
         )
+        nueva = coincidencias_num[len(coincidencias_num)-1]
+        res_final = re.split(
+            '\'',
+            str(
+                nueva
+            )
+        )
+
+        respuesta = res_final[len(res_final) - 2]
     return respuesta
 
 
