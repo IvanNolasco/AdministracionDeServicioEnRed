@@ -1,7 +1,33 @@
 from pysnmp import hlapi, debug
-import time
 import re
-import Manager.send_email as enviar_correo
+import Manager.send_email as mail
+import Manager.constantes as const
+
+# ----------------------------------------
+# CONSTANTES QUE SE USAN PARA LA FUNCION
+# def obtener_valores_oid()
+# SE PUEDEN CAMBIAR A VOLUNTAD, PUEDE
+# APOYARSE UTILIZANDO LAS CONSTANTES DEL
+# ARCHIVO constantes.py, QUE SE ENCUENTRA
+# EN ESTE MISMO DIRECTORIO.
+# ----------------------------------------
+
+guardar_en_archivo = True
+
+direccion_ip = const.direc_ip
+
+umbral_porcentaje_cpu = const.umbral_porcentaje_cpu
+umbral_porcentaje_memoria_proc = const.umbral_porcentaje_memoria_proc
+umbral_porcentaje_memoria_io = const.umbral_porcentaje_memoria_io
+umbral_temperatura = const.umbral_temperatura
+
+oid_nombre = const.oid_equipo_nombre
+oid_cpu = const.oid_cisco_ios_cpu_5s
+oid_memoria_proc_uso = const.oid_cisco_vic_mem_proc_uso
+oid_memoria_proc_rest = const.oid_cisco_vic_mem_proc_rest
+oid_memoria_io_uso = const.oid_cisco_vic_mem_io_uso
+oid_memoria_io_rest = const.oid_cisco_vic_mem_io_rest
+oid_temperatura = const.oid_cisco_temperatura
 
 
 def get(target, oids, credentials, port=161, engine=hlapi.SnmpEngine(), context=hlapi.ContextData()):
@@ -57,12 +83,12 @@ def ejecutar_oid(
     ip='10.0.0.1',
     oids=['1.3.6.1.2.1.1.5.0'],
     comunidad='comunidadSNMP',
-    esNumero=True
+    es_numero=True
 ):
     # debug.setLogger(debug.Debug('io', 'msgproc', 'secmod'))
     hlapi.CommunityData(comunidad)
     respuesta = ''
-    if esNumero:
+    if es_numero:
         coincidencias_num = re.split(
             '=\s+',
             str(
@@ -103,198 +129,181 @@ def regla_de_tres(
     memoria_libre=40
 ):
     memoria_total = memoria_ocupada + memoria_libre
-    porcentaje_ocupado = memoria_total * 100 / memoria_ocupada
+    porcentaje_ocupado = memoria_ocupada * 100 / memoria_total
     return porcentaje_ocupado
 
-# TIPO_OID: NORMAL, CPU, MEMORIA
+
+class File:
+    def __init__(self, nom_archivo, nom_modo):
+        self.nom_archivo = nom_archivo
+        self.nom_modo = nom_modo
+
+    def __enter__(self):
+        self.open_file = open(self.nom_archivo, self.nom_modo)
+        return self.open_file
+
+    def __exit__(self, *args):
+        self.open_file.close()
+
+
+def escribir_archivo(nom_archivo, dato):
+    datos = []
+    with File(nom_archivo, 'w+') as archivo:
+        archivo.write(str(dato) + ',')
+        datos.append(archivo)
+
+
+def guardar_resultados_archivo(
+    nombre,
+    cpu,
+    porcentaje_memoria_proc,
+    porcentaje_memoria_io,
+    temperatura
+):
+    escribir_archivo(
+        str(nombre) + '_resultados_cpu.txt',
+        str(cpu)
+    )
+
+    escribir_archivo(
+        str(nombre) + '_resultados_memoria_proc.txt',
+        str(porcentaje_memoria_proc)
+    )
+
+    escribir_archivo(
+        str(nombre) + '_resultados_memoria_io.txt',
+        str(porcentaje_memoria_io)
+    )
+
+    escribir_archivo(
+        str(nombre) + '_resultados_temperatura.txt',
+        str(temperatura)
+    )
 
 
 def obtener_valores_oid(
     direc_ip='10.0.80.2',
-    tipo_oid='NORMAL',
-    umbral=60
+    umbral_cpu=5,
+    umbral_memoria_proc=60,
+    umbral_memoria_io=60,
+    umbral_temp=2
 ):
+    global direccion_ip
+    global umbral_porcentaje_cpu
+    global umbral_porcentaje_memoria_proc
+    global umbral_porcentaje_memoria_io
+    global umbral_temperatura
+    global oid_nombre
+    global oid_cpu
+    global oid_memoria_proc_uso
+    global oid_memoria_proc_rest
+    global oid_memoria_io_uso
+    global oid_memoria_io_rest
+    global oid_temperatura
+    global guardar_en_archivo
 
-    # -------------------------------
-    # ---- OIDS PARA USO DEL CPU ----
-    # -------------------------------
+    if direccion_ip != direc_ip:
+        direccion_ip = direc_ip
+        umbral_porcentaje_cpu = const.umbral_porcentaje_cpu
+        umbral_porcentaje_memoria_proc = const.umbral_porcentaje_memoria_proc
+        umbral_porcentaje_memoria_io = const.umbral_porcentaje_memoria_io
+        umbral_temperatura = const.umbral_temperatura
 
-    umbral_porcentaje_cpu = umbral
+    if umbral_memoria_proc != umbral_porcentaje_memoria_proc:
+        umbral_porcentaje_memoria_proc = umbral_memoria_proc
 
-    # OID para obtener el rendimiento del CPU de un
-    # router cada 1 min y 5 min (Pagina de Vic)
-    oid_cisco_vic_cpu_1m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.7']
-    oid_cisco_vic_cpu_5m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.8']
-    # NOTA: Si no funcionan, agregarles un .0 al OID al final o en todo
-    # caso un . al principio del OID   
-    
-    # OID para obtener el rendimiento del CPU de un
-    # router con CISCO IOS en el intervalo de 5 segs, 5 min y 1 hora
-    oid_cisco_ios_cpu_5s = ['1.3.6.1.4.1.9.2.1.56']
-    oid_cisco_ios_cpu_5m = ['1.3.6.1.4.1.9.2.1.58']
-    oid_cisco_ios_cpu_1h = ['1.3.6.1.4.1.9.2.1.57']
-    # NOTA: Si no funcionan, agregarles un .0 al OID al final o en todo
-    # caso un . al principio del OID
-    
-    # OID para obtener el rendimiento del CPU de un
-    # router CISCO ASR 100 en el intervalo de 1 min y 5 min
-    # para routers tipo RP0, ESP0, SIP0
-    oid_cisco_rp0_cpu_1m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.24.2']
-    oid_cisco_esp0_cpu_1m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.24.3']
-    oid_cisco_sip0_cpu_1m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.24.4']
-    oid_cisco_rp0_cpu_5m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.25.2']
-    oid_cisco_esp0_cpu_5m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.25.3']
-    oid_cisco_sip0_cpu_5m = ['1.3.6.1.4.1.9.9.109.1.1.1.1.25.4']   
-    # NOTA: Si no funcionan, agregarles un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    if umbral_memoria_io != umbral_porcentaje_memoria_io:
+        umbral_porcentaje_memoria_io = umbral_memoria_io
 
-    # -------------------------------------
-    # ---- OIDS PARA USO DE LA MEMORIA ----
-    # ------------------------------------- 
+    if umbral_cpu != umbral_porcentaje_cpu:
+        umbral_porcentaje_cpu = umbral_cpu
 
-    umbral_porcentaje_memoria = umbral
+    if umbral_temp != umbral_temperatura:
+        umbral_temperatura = umbral_temp
 
-    # OID para obtener el uso de la memoria del procesador de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_proc_uso = ['1.3.6.1.4.1.9.9.48.1.1.1.5.1']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    # OID que obtiene el nombre del equipo
+    nombre = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_nombre,
+        es_numero=False
+    )
 
-    # OID para obtener el uso de la memoria de I/O de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_io_uso = ['1.3.6.1.4.1.9.9.48.1.1.1.5.2']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    # OID para obtener el porcentaje de uso del CPU
+    cpu = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_cpu
+    )
 
-    # OID para obtener el uso de la memoria de PCI de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_pci_uso = ['1.3.6.1.4.1.9.9.48.1.1.1.5.3']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    # Si pasa del umbral va a enviar un correo al admin
+    if float(cpu) > umbral_porcentaje_cpu:
+        mail.send_email(nombre, '1')
 
-    # OID para obtener el uso de la memoria de Rapida de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_fast_uso = ['1.3.6.1.4.1.9.9.48.1.1.1.5.4']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    # OID que obtiene el porcentaje de MEMORIA DEL PROCESADOR
+    memoria_proc_uso = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_memoria_proc_uso
+    )
 
-    # OID para obtener el uso de la memoria de multibus de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_fast_uso = ['1.3.6.1.4.1.9.9.48.1.1.1.5.5']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    memoria_proc_restante = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_memoria_proc_rest
+    )
 
-    # OID para obtener el restante de la memoria del procesador de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_proc_rest = ['1.3.6.1.4.1.9.9.48.1.1.1.6.1']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    porcentaje_memoria_proc = regla_de_tres(
+        float(memoria_proc_uso),
+        float(memoria_proc_restante)
+    )
 
-    # OID para obtener el restante de la memoria de I/O de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_io_rest = ['1.3.6.1.4.1.9.9.48.1.1.1.6.2']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    # Si pasa del umbral va a enviar un correo al admin
+    if porcentaje_memoria_proc > umbral_porcentaje_memoria_proc:
+        mail.send_email(nombre, '2')
 
-    # OID para obtener el restante de la memoria de PCI de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_pci_rest = ['1.3.6.1.4.1.9.9.48.1.1.1.6.3']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    # OID que obtiene el porcentaje de MEMORIA I/O
+    memoria_io_uso = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_memoria_io_uso
+    )
 
-    # OID para obtener el restante de la memoria de Rapida de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_fast_rest = ['1.3.6.1.4.1.9.9.48.1.1.1.6.4']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    memoria_io_restante = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_memoria_io_rest
+    )
 
-    # OID para obtener el restante de la memoria de multibus de un
-    # router (Pagina de Vic)
-    oid_cisco_vic_mem_fast_rest = ['1.3.6.1.4.1.9.9.48.1.1.1.6.5']
-    # NOTA: Si no funciona usar el siguiente,
-    # si no funciona el siguiente 
-    # agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID
+    porcentaje_memoria_io = regla_de_tres(
+        float(memoria_io_uso),
+        float(memoria_io_restante)
+    )
 
-    # ---------------------------------------
-    # ---- OID PARA OBTENER EL HOSTNAME ----
-    # --------------------------------------- 
+    # Si pasa del umbral va a enviar un correo al admin
+    if porcentaje_memoria_io > umbral_porcentaje_memoria_io:
+        mail.send_email(nombre, '3')
 
-    # OID para obtener el restante de la memoria de multibus de un
-    # router (Pagina de Vic)
-    oid_cisco_hostname = ['1.3.6.1.4.1.9.2.1.3']
-    # NOTA: Si no funciona agregar un .0 al OID al final o en todo
-    # caso un . al principio del OID, tambien se puede utilizar la
-    # IP que se usa en ejecutar_oid para enviar_correo()
+    # OID que obtiene el estado de la TEMPERATURA
+    temperatura = ejecutar_oid(
+        ip=direc_ip,
+        oids=oid_temperatura
+    )
 
-    # Si se va a ejecutar un ejemplo normalito, usarlo tal cual
-    if tipo_oid == 'NORMAL':
-        normal = ejecutar_oid(
-            ip=direc_ip,
-            esNumero=False
-        )
-        return normal
+    # Si devuelve un valor mayor a 1, manda un email al admin
+    if int(temperatura) > umbral_temperatura:
+        mail.send_email(nombre, '4')
 
-    # Si se va a monitorear el CPU, ejecutarlo asi:
-    if tipo_oid == 'CPU':
-        hostname = ejecutar_oid(
-            ip=direc_ip,
-            oids=oid_cisco_hostname
+    # En este proceso escribe en los archivos los resultados
+    # obtenidos para hacer las graficas estaticas
+    # solamente si esta habilitada la opcion de guardar_en_archivo
+    if guardar_en_archivo:
+        guardar_resultados_archivo(
+            nombre,
+            cpu,
+            porcentaje_memoria_proc,
+            porcentaje_memoria_io,
+            temperatura
         )
 
-        cpu = ejecutar_oid(
-            ip=direc_ip,
-            oids=oid_cisco_vic_cpu_1m
-        )
-
-        if int(cpu) > umbral_porcentaje_cpu:
-            enviar_correo(hostname,'1')  # Aqui se puede utilizar la IP en lugar del hostname
-
-        return cpu
-    # Si se va a monitorear la MEMORIA DEL CPU, ejecutarlo asi:
-
-    if tipo_oid == 'MEMORIA':
-        hostname = ejecutar_oid(
-            p=direc_ip,
-            oids=oid_cisco_hostname
-        )
-
-        memoria_uso = ejecutar_oid(
-            ip=direc_ip,
-            oids=oid_cisco_vic_mem_proc_uso
-        )
-
-        memoria_restante = ejecutar_oid(
-            ip=direc_ip,
-            oids=oid_cisco_vic_mem_proc_rest
-        )
-
-        porcentaje_memoria = regla_de_tres(
-            int(memoria_uso),
-            int(memoria_restante)
-        )
-
-        if porcentaje_memoria > umbral_porcentaje_memoria:
-            enviar_correo(hostname,'2')  # Aqui se puede utilizar la IP en lugar del hostname
-
-        return porcentaje_memoria
-
-    time.sleep(5)
+    return \
+        nombre, \
+        cpu, \
+        porcentaje_memoria_proc, \
+        porcentaje_memoria_io, \
+        temperatura
+    # time.sleep(5)

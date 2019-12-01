@@ -28,9 +28,10 @@ def read_template(filename):
 # function to send an email alerting of a problem in the network
 def send_email(router_id, type_problem):
     problems = {'1':'El porcentaje de uso del CPU',
-                '2':'El porcentaje de uso de la memoria RAM',
-                '3':'El nivel de temperatura',
-                '4':'La capacidad del disco duro'}
+                '2':'El porcentaje de uso de la memoria del procesador',
+                '3':'El porcentaje de uso de la memoria I/O',
+                '4':'El nivel de temperatura',
+                '5':'La capacidad del disco duro'}
     names, emails = get_contacts('adminsmail.txt')
     message_template = read_template('message.txt')
     my_email = 'sistema.de.monitoreo.redes3@gmail.com'
