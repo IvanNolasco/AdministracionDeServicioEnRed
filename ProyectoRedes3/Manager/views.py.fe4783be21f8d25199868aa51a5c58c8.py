@@ -11,8 +11,8 @@ def prueba(request):
 
 
 def oids_req(request):
-    nombre, cpu, mem_proc, mem_io, temp = oids.obtener_valores_oid(
-        direc_ip='10.0.0.1',
+        nombre, cpu, mem_proc, mem_io, temp = oids.obtener_valores_oid(
+        direc_ip='10.0.80.2',
         umbral_cpu=5,
         umbral_memoria_proc=60,
         umbral_memoria_io=60,
