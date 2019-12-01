@@ -100,6 +100,7 @@ def ejecutar_oid(
             )
         )
 
+        print('\n El Resultado es: ', coincidencias_num)
         respuesta = coincidencias_num[len(coincidencias_num) - 1]
     else:
         coincidencias_num = re.split(
@@ -113,14 +114,21 @@ def ejecutar_oid(
             )
         )
         nueva = coincidencias_num[len(coincidencias_num)-1]
+        
+        print('\n El Resultado antes del regex es: ', coincidencias_num)
         res_final = re.split(
             '\'',
             str(
                 nueva
             )
         )
-
+        print('\n El Resultado despues del regex es: ', res_final)
         respuesta = res_final[len(res_final) - 2]
+
+    print('Se ejecuto el OID: ', oids)
+    print('\nen la IP: ', ip)
+    print('\n en la comunidad: ', comunidad)
+    print('\n Es un numero el resultado?: ', es_numero)
     return respuesta
 
 
