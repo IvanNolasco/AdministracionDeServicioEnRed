@@ -3,6 +3,7 @@ import time
 import re
 import Manager.send_email as enviar_correo
 
+
 def get(target, oids, credentials, port=161, engine=hlapi.SnmpEngine(), context=hlapi.ContextData()):
     handler = hlapi.getCmd(
         engine,
@@ -55,22 +56,33 @@ def cast(value):
 def ejecutar_oid(
     ip='10.0.0.1',
     oids=['1.3.6.1.2.1.1.5.0'],
-    comunidad='comunidadSNMP'
+    comunidad='comunidadSNMP',
+    esNumero=True
 ):
     # debug.setLogger(debug.Debug('io', 'msgproc', 'secmod'))
     hlapi.CommunityData(comunidad)
-    coincidencias_num = re.split(
-        '\d+',
-        str(
+    respuesta = ''
+    if esNumero:
+        coincidencias_num = re.split(
+            '\d+',
+            str(
+                get(
+                    ip,
+                    oids,
+                    hlapi.CommunityData(comunidad)
+                )  # Nota: Si no funciona, agregar un [0] aqui
+            )
+        )
+
+        respuesta = coincidencias_num[len(coincidencias_num) - 1]
+    else:
+        respuesta = str(
             get(
                 ip,
                 oids,
                 hlapi.CommunityData(comunidad)
             )  # Nota: Si no funciona, agregar un [0] aqui
         )
-    )
-
-    respuesta = coincidencias_num[len(coincidencias_num) - 1]
     return respuesta
 
 
@@ -84,16 +96,18 @@ def regla_de_tres(
 
 # TIPO_OID: NORMAL, CPU, MEMORIA
 
+
 def obtener_valores_oid(
-    direc_ip='10.0.0.1',
-    tipo_oid='NORMAL'
+    direc_ip='10.0.80.2',
+    tipo_oid='NORMAL',
+    umbral=60
 ):
 
     # -------------------------------
     # ---- OIDS PARA USO DEL CPU ----
     # -------------------------------
 
-    umbral_porcentaje_cpu = 60
+    umbral_porcentaje_cpu = umbral
 
     # OID para obtener el rendimiento del CPU de un
     # router cada 1 min y 5 min (Pagina de Vic)
@@ -126,7 +140,7 @@ def obtener_valores_oid(
     # ---- OIDS PARA USO DE LA MEMORIA ----
     # ------------------------------------- 
 
-    umbral_porcentaje_memoria = 60
+    umbral_porcentaje_memoria = umbral
 
     # OID para obtener el uso de la memoria del procesador de un
     # router (Pagina de Vic)
@@ -222,7 +236,8 @@ def obtener_valores_oid(
     # Si se va a ejecutar un ejemplo normalito, usarlo tal cual
     if tipo_oid == 'NORMAL':
         normal = ejecutar_oid(
-            ip=direc_ip
+            ip=direc_ip,
+            esNumero=False
         )
         return normal
 

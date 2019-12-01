@@ -9,6 +9,7 @@ import Manager.ejemplo_hazel as oids
 def prueba(request):
     return render (request, "layout.html",{"title":"Welcome"})
 
+
 def oids_req(request):
     var_oid = oids.obtener_valores_oid()
     print("varid=", var_oid)
