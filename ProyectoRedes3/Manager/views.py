@@ -2,16 +2,13 @@ from django.shortcuts import render
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-import ejemplo_hazel as oids
+import Manager.ejemplo_hazel as oids
 
 # Create your views here.
 
 def prueba(request):
     return render (request, "layout.html",{"title":"Welcome"})
 
-def routers(request):
-    #valor()
-    return render (request, "r1.html",{"title":"Monitoring"})
 
 def oids_req(request):
     var_oid = oids.obtener_valores_oid()
@@ -69,7 +66,7 @@ def cast(value):
 
 def valor():
     hlapi.CommunityData('comunidadSNMP')
-    print(get('10.0.10.2', ['.1.3.6.1.4.1.9.9.109.1.1.1.1.5'],hlapi.CommunityData('comunidadSNMP')))
+    print(get('10.0.0.2', ['1.3.6.1.2.1.1.5.0'],hlapi.CommunityData('comunidadSNMP')))
 
 
 '''class DeliversClient(View):
