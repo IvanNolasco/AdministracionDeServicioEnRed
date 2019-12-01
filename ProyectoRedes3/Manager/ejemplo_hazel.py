@@ -55,22 +55,33 @@ def cast(value):
 def ejecutar_oid(
     ip='10.0.10.2',
     oids=['1.3.6.1.2.1.1.5.0'],
-    comunidad='comunidadSNMP'
+    comunidad='comunidadSNMP',
+    esNumero=True
 ):
     # debug.setLogger(debug.Debug('io', 'msgproc', 'secmod'))
     hlapi.CommunityData(comunidad)
-    coincidencias_num = re.split(
-        '\d+',
-        str(
+    respuesta = 'VACIA'
+    if esNumero:
+        coincidencias_num = re.split(
+            '=\s',
+            str(
+                get(
+                    ip,
+                    oids,
+                    hlapi.CommunityData(comunidad)
+                )  # Nota: Si no funciona, agregar un [0] aqui
+            )
+        )
+        respuesta = coincidencias_num[len(coincidencias_num) - 1]
+    else:
+        respuesta = str(
             get(
                 ip,
                 oids,
                 hlapi.CommunityData(comunidad)
             )  # Nota: Si no funciona, agregar un [0] aqui
         )
-    )
 
-    respuesta = coincidencias_num[len(coincidencias_num) - 1]
     return respuesta
 
 
@@ -86,14 +97,15 @@ def regla_de_tres(
 
 def obtener_valores_oid(
     direc_ip='10.0.10.2',
-    tipo_oid='NORMAL'
+    tipo_oid='NORMAL',
+    umbral=60
 ):
 
     # -------------------------------
     # ---- OIDS PARA USO DEL CPU ----
     # -------------------------------
 
-    umbral_porcentaje_cpu = 60
+    umbral_porcentaje_cpu = umbral
 
     # OID para obtener el rendimiento del CPU de un
     # router cada 1 min y 5 min (Pagina de Vic)
@@ -126,7 +138,7 @@ def obtener_valores_oid(
     # ---- OIDS PARA USO DE LA MEMORIA ----
     # ------------------------------------- 
 
-    umbral_porcentaje_memoria = 60
+    umbral_porcentaje_memoria = umbral
 
     # OID para obtener el uso de la memoria del procesador de un
     # router (Pagina de Vic)
@@ -222,7 +234,8 @@ def obtener_valores_oid(
     # Si se va a ejecutar un ejemplo normalito, usarlo tal cual
     if tipo_oid == 'NORMAL':
         normal = ejecutar_oid(
-            ip=direc_ip
+            ip=direc_ip,
+            esNumero=False
         )
         return normal
 
