@@ -54,7 +54,7 @@ def cast(value):
 
 
 def ejecutar_oid(
-    ip='10.0.80.2',
+    ip='10.0.0.1',
     oids=['1.3.6.1.2.1.1.5.0'],
     comunidad='comunidadSNMP',
     esNumero=True
