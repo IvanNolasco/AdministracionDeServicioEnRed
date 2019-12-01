@@ -1,4 +1,4 @@
-direc_ip = '1.3.6.1.4.1.9.2.1.56.0'
+direc_ip = '10.0.80.2'
 umbral_porcentaje_cpu = 5
 umbral_porcentaje_memoria_proc = 60
 umbral_porcentaje_memoria_io = 60
