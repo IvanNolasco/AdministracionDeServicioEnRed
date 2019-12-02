@@ -89,7 +89,7 @@ def ejecutar_oid(
     hlapi.CommunityData(comunidad)
     respuesta = ''
     if es_numero:
-        coincidencias_num = re.findAll(
+        coincidencias_num = re.findall(
             '\d+',
             str(
                 get(
