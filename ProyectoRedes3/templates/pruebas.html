@@ -17,7 +17,7 @@ var chartColors = {
 };
 
 function randomScalingFactor() {
-	return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
+	return (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 5) + Math.round(Math.random() * 5)/10;
 }
 
 function onRefresh(chart) {
@@ -34,7 +34,7 @@ var config = {
 	type: 'line',
 	data: {
 		datasets: [{
-			label: 'Dataset 2 (cubic interpolation)',
+			label: '% del uso de la CPU',
 			backgroundColor: color(chartColors.blue).alpha(0.5).rgbString(),
 			borderColor: chartColors.blue,
 			fill: false,
@@ -45,7 +45,7 @@ var config = {
 	options: {
 		title: {
 			display: true,
-			text: 'Line chart (hotizontal scroll) sample'
+			text: 'Uso del CPU contra el tiempo'
 		},
 		scales: {
 			xAxes: [{
@@ -121,10 +121,5 @@ document.getElementById('addData').addEventListener('click', function() {
 	<div>
 		<canvas id="myChart"></canvas>
 	</div>
-	<p>
-		<button id="randomizeData">Randomize Data</button>
-		<button id="addDataset">Add Dataset</button>
-		<button id="removeDataset">Remove Dataset</button>
-		<button id="addData">Add Data</button>
-	</p>
+
 </body>
