@@ -11,11 +11,13 @@ def prueba(request):
 
 
 def oids_req(request):
+    dir=request.GET['dir']
+    r = request.GET['r']
     nombre, cpu, mem_proc, mem_io, temp = oids.obtener_valores_oid(
-        direc_ip='10.0.0.1',
+        direc_ip=dir,
         umbral_cpu=5,
         umbral_memoria_proc=60,
-        umbral_memoria_io=60,
+        umbral_memoria_io=30,
         umbral_temp=2
     ) # Igual puedes llamar a la funcion sin parametros
 
@@ -24,8 +26,9 @@ def oids_req(request):
     print("Memoria del procesador: ", mem_proc)
     print("Memoria I/O: ", mem_io)
     print("Temperatura: ", temp)
-
-    return render (request, "r1.html",{"title":"Monitoring","nombre":nombre})
+    mem_proc="{0:.2f}".format(mem_proc)
+    mem_io = "{0:.2f}".format(mem_io)
+    return render (request, "r1.html", {"title":"Monitoring","r":r, "nombre":nombre,"cpu":cpu,"memp":mem_proc,"memio":mem_io,"temp":temp})
 
 '''def oids_req(request):
     #var_oid = oids.obtener_valores_oid()
