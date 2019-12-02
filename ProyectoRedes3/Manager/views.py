@@ -7,8 +7,11 @@ from Manager.tests import get
 from pysnmp import hlapi, debug
 
 def prueba(request):
-    return render (request, "layout.html",{"title":"Welcome"})
+    return render (request, "prueba.html")
 
+
+def pr(request):
+    return render(request, "layout.html", {"title": "Welcome"})
 
 def oids_req(request):
     dir=request.GET['dir']
@@ -17,7 +20,7 @@ def oids_req(request):
         direc_ip=dir,
         umbral_cpu=5,
         umbral_memoria_proc=60,
-        umbral_memoria_io=30,
+        umbral_memoria_io=60,
         umbral_temp=2
     ) # Igual puedes llamar a la funcion sin parametros
 
@@ -28,7 +31,9 @@ def oids_req(request):
     print("Temperatura: ", temp)
     mem_proc="{0:.2f}".format(mem_proc)
     mem_io = "{0:.2f}".format(mem_io)
-    return render (request, "r1.html", {"title":"Monitoring","r":r, "nombre":nombre,"cpu":cpu,"memp":mem_proc,"memio":mem_io,"temp":temp})
+    memotp="{0:.2f}".format(100-(float(mem_proc)))
+    memotio="{0:.2f}".format(100-(float(mem_proc)))
+    return render (request, "r1.html", {"title":"Monitoring","r":r, "nombre":nombre,"cpu":cpu,"memp":mem_proc,"memio":mem_io,"temp":temp,"memotp":memotp,"memotio":memotio})
 
 '''def oids_req(request):
     #var_oid = oids.obtener_valores_oid()

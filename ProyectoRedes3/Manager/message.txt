@@ -1,5 +1,0 @@
-${ADMIN_NAME} el Sistema de Monitoreo de Red ha detectado el siguiente problema:
-
-${PROBLEM_DESCRIPTION} en el router ${ROUTER_ID} ha sobrepasado los niveles esperados.
-
-Favor de atender el problema lo antes posible.

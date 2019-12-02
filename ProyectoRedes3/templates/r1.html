@@ -6,8 +6,7 @@
 </br>
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Router {{r}}</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-  </div>
+</div>
 
 <div class="row">
 
@@ -43,7 +42,7 @@
         </div>
       </div>
 
-    <div class="col-xl-3 col-md-6 mb-4">
+    <!-- <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -67,7 +66,7 @@
           </div>
         </div>
       </div>
-
+      -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
           <div class="card-body">
@@ -86,23 +85,21 @@
     </div>
 
   <!-- Pie Chart -->
+  <div class="row">
   <div class="col-xl-4 col-lg-5">
     <div class="card shadow mb-4">
       <!-- Card Header - Dropdown -->
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Memory Utilization</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Processor Memory Utilization</h6>
       </div>
       <!-- Card Body -->
       <div class="card-body">
         <div class="chart-pie pt-4 pb-2">
-          <canvas id="myPieChart" ></canvas>
+          <canvas id="myPieChartP" datamp="{{memp}}" ></canvas>
         </div>
         <div class="mt-4 text-center small">
           <span class="mr-2">
-            <i class="fas fa-circle text-primary"></i> Processor
-          </span>
-          <span class="mr-2">
-            <i class="fas fa-circle text-success"></i> I/O
+            <i class="fas fa-circle text-success"></i> Processor
           </span>
           <span class="mr-2">
             <i class="fas fa-circle text-info"></i> Other
@@ -111,7 +108,31 @@
       </div>
     </div>
   </div>
-  </div>
+
+    <!-- Pie Chart -->
+    <div class="col-xl-4 col-lg-5">
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">I/O Memory Utilization</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="chart-pie pt-4 pb-2">
+            <canvas id="myPieChartIO" datamp="{{memp}}"></canvas>
+          </div>
+          <div class="mt-4 text-center small">
+            <span class="mr-2">
+              <i class="fas fa-circle text-success"></i> I/O
+            </span>
+            <span class="mr-2">
+              <i class="fas fa-circle text-info"></i> Other
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
 
 
 
@@ -122,19 +143,17 @@
 {% block scripts %}
 
   <script>
-  // Set new default font family and font color to mimic Bootstrap's default styling
-  Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe
-  UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    
+  Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
   Chart.defaults.global.defaultFontColor = '#858796';
 
-  // Pie Chart Example
-  var ctx = document.getElementById("myPieChart");
+  var ctx = document.getElementById("myPieChartP");
   var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-  labels: ["Proccesor", "I/O", "Other"],
+  labels: ["","Proccesor", "Other"],
   datasets: [{
-  data: [10, 30, 15],
+  data: [0,{{memp}}, {{memotp}}],
   backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
   hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
   hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -158,6 +177,43 @@
   cutoutPercentage: 80,
   },
   });
+  </script>
+
+  <script>
+
+    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
+
+    var ctx = document.getElementById("myPieChartIO");
+    var myPieChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ["","I/O","Other"],
+        datasets: [{
+          data: [0,{{ memio }}, {{ memotio }}],
+      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+    },
+    options: {
+      maintainAspectRatio: false,
+        tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+              borderWidth: 1,
+                xPadding: 15,
+                  yPadding: 15,
+                    displayColors: false,
+                      caretPadding: 10,
+    },
+      legend: {
+        display: false
+      },
+      cutoutPercentage: 80,
+    },
+    });
   </script>
 
 {% endblock %}
