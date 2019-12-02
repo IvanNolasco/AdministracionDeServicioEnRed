@@ -32,8 +32,8 @@ def send_email(router_id, type_problem):
                 '3':'El porcentaje de uso de la memoria I/O',
                 '4':'El nivel de temperatura',
                 '5':'La capacidad del disco duro'}
-    names, emails = get_contacts('adminsmail.txt')
-    message_template = read_template('message.txt')
+    names, emails = get_contacts('static/mail/adminsmail.txt')
+    message_template = read_template('static/mail/message.txt')
     my_email = 'sistema.de.monitoreo.redes3@gmail.com'
     password = 'redescom123'
     
