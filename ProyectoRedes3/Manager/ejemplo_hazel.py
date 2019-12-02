@@ -90,7 +90,7 @@ def ejecutar_oid(
     respuesta = ''
     if es_numero:
         coincidencias_num = re.split(
-            '=\s+',
+            '(:\s*)|(\=\s*)',
             str(
                 get(
                     ip,
@@ -241,7 +241,7 @@ def obtener_valores_oid(
         ip=direc_ip,
         oids=oid_cpu
     )
-
+    print('cpu: ', cpu)
     # Si pasa del umbral va a enviar un correo al admin
     if float(cpu) > umbral_porcentaje_cpu:
         mail.send_email(nombre, '1')
