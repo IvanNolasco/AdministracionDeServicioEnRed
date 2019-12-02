@@ -156,7 +156,7 @@ class File:
 
 def escribir_archivo(nom_archivo, dato):
     datos = []
-    with File(nom_archivo, 'w+') as archivo:
+    with File(nom_archivo, 'a') as archivo:
         archivo.write(str(dato) + ',')
         datos.append(archivo)
 
