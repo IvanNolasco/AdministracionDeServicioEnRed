@@ -90,7 +90,7 @@ def ejecutar_oid(
     respuesta = ''
     if es_numero:
         coincidencias_num = re.split(
-            '(:\s*)|(\=\s*)',
+            '\d+',
             str(
                 get(
                     ip,
