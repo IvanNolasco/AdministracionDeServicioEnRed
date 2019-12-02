@@ -15,16 +15,28 @@ var chartColors = {
 	purple: 'rgb(153, 102, 255)',
 	grey: 'rgb(201, 203, 207)'
 };
-
-function randomScalingFactor() {
-	return (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 5) + Math.round(Math.random() * 5)/10;
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
+var yfactor = 0;
+function randomScalingFactor() {
+    var yfactor2 = 0;
+    if(yfactor <= 3){
+        yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 3) + Math.round(Math.random() * 9)/10;
+        yfactor = yfactor2;
+    }
+    else
+        yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.floor(Math.random() * 5) - Math.floor(Math.random() * 9)/10 + 1;
+	return yfactor2;
+}
+
 
 function onRefresh(chart) {
 	chart.config.data.datasets.forEach(function(dataset) {
-		dataset.data.push({
+        var asas=randomScalingFactor()
+        dataset.data.push({
 			x: Date.now(),
-			y: randomScalingFactor()
+			y: asas
 		});
 	});
 }
