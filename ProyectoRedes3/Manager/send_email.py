@@ -54,7 +54,7 @@ def send_email(router_id, type_problem):
         # setup the parameters of the message
         msg['From'] = my_email
         msg['To'] = email
-        msg['Subject'] = 'ALERTA del Sistema de Monitoreo de Red'
+        msg['Subject'] = 'ALERTA de SNMP Manager'
     
         # add in the message body
         msg.attach(MIMEText(message, 'plain'))
