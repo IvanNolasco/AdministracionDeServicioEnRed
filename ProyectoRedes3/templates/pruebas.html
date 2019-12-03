@@ -21,12 +21,50 @@ function sleep(ms) {
 var yfactor = 0;
 function randomScalingFactor() {
     var yfactor2 = 0;
-    if(yfactor <= 3){
-        yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 3) + Math.round(Math.random() * 9)/10;
+    var yfactor3 = 1;
+    if(yfactor < 1){
+        yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1) ;
         yfactor = yfactor2;
     }
-    else
-        yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.floor(Math.random() * 5) - Math.floor(Math.random() * 9)/10 + 1;
+    if(yfactor <= 1){
+        yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 2);
+        yfactor = yfactor2;
+    }
+    if(yfactor <= 2){
+        yfactor3 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        if(yfactor3 < 1)
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        else
+            yfactor3 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 4);
+        yfactor = yfactor2;   
+    }
+    if(yfactor <= 3){
+        yfactor3 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        if(yfactor3 < 1)
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        else
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 4);
+        yfactor = yfactor2;
+    }
+    if(yfactor <= 4){
+        yfactor3 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        if(yfactor3 < 1)
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        else
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 5) ;
+        yfactor = yfactor2;
+    }
+    else{
+        yfactor3 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        if(yfactor3 < 1)
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.round(Math.random() * 1);
+        else
+            yfactor2 = (Math.random() > 0.5 ? 1.0 : 0.0) * Math.floor(Math.random() *5);
+        if(yfactor2 <3)
+            yfactor = yfactor2;
+        else
+            yfactor =1
+    }
 	return yfactor2;
 }
 
