@@ -7,11 +7,11 @@ from Manager.tests import get
 from pysnmp import hlapi, debug
 from Manager.graficas import  cpu_graph
 
-def prueba(request):
+def pr(request):
     return render (request, "prueba.html")
 
 
-def pr(request):
+def prueba(request):
     return render(request, "layout.html", {"title": "Welcome"})
 
 def oids_req(request):
@@ -34,7 +34,7 @@ def oids_req(request):
     mem_io = "{0:.2f}".format(mem_io)
     memotp="{0:.2f}".format(100-(float(mem_proc)))
     memotio="{0:.2f}".format(100-(float(mem_proc)))
-    cpu_graph("R"+ r)
+    cpu_graph("R"+r)
     return render (request, "r1.html", {"title":"Monitoring","r":r, "nombre":nombre,"cpu":cpu,"memp":mem_proc,"memio":mem_io,"temp":temp,"memotp":memotp,"memotio":memotio})
 
 '''def oids_req(request):

@@ -26,8 +26,7 @@ def cpu_graph(hostname):
     ax.plot(t, cpu_values)
     ax.set(xlabel='Tiempo (hrs)', ylabel='Uso de CPU (%)',
            title='Uso del CPU en '+ hostname + ' durante el última día')
+    plt.ylim(0, 20)
     ax.grid()
     fig.savefig('static/graphs/CPU_'+hostname+'.png')
-    plt.ylim(0,20)
-    plt.legend()
-    plt.show()
+    
